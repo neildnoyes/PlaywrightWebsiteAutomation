@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master               # optional, auto-run on master branch push
+  repository_dispatch:
+    types: [run-playwright-tests]
 
 jobs:
   test:
@@ -30,6 +32,24 @@ jobs:
 
       - name: Build Maven Project
         run: mvn clean install -DskipTests
+
+      - name: Wait for site to be live
+        if: ${{ github.event.client_payload.site_url != '' }}
+        run: |
+          echo "Waiting for site to be live at $BASE_URL ..."
+          for i in {1..15}; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL")
+            if [ "$status" -eq 200 ]; then
+              echo "Site is live!"
+              exit 0
+            fi
+            echo "Site not ready yet (status $status). Retrying in 5s..."
+            sleep 5
+          done
+          echo "Site did not become live in time."
+          exit 1
+        env:
+          BASE_URL: ${{ github.event.client_payload.site_url }}
 
       - name: Run Playwright Tests
         run: mvn test
