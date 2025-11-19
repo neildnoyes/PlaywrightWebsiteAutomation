@@ -33,6 +33,12 @@ jobs:
       - name: Build Maven Project
         run: mvn clean install -DskipTests
 
+      - name: Wait for GitHub Pages deployment
+        if: ${{ github.event.client_payload.site_url != '' }}
+        run: |
+          echo "Waiting 3 minutes to ensure Pages deployment is finished..."
+          sleep 180  # 180 seconds = 3 minutes
+
       - name: Wait for site to be live
         if: ${{ github.event.client_payload.site_url != '' }}
         run: |
