@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suite name="Playwright Suite" parallel="tests" thread-count="3">
+
+    <!--
     <test name="Google Input Test">
         <classes>
             <class name="com.example.tests.GoogleSearchTest"/>
@@ -10,4 +12,12 @@
             <class name="com.example.tests.GoogleSearchTest"/>
         </classes>
     </test>
+    -->
+    <test name="Wedding Test">
+        <classes>
+            <class name="com.example.tests.WeddingTest"/>
+        </classes>
+    </test>
+
+
 </suite>
